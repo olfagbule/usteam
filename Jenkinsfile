@@ -3,9 +3,9 @@ pipeline {
     stages {
         stage('Code Checkout') {
             steps {
-                git branch: 'euteam20',
+                git branch: 'main',
                 credentialsId: 'git-cred',
-                url: 'https://github.com/CloudHight/usteam.git'
+                url: 'https://github.com/olfagbule/usteam.git'
             }
         }
         stage('Code Analysis') {
@@ -52,7 +52,7 @@ pipeline {
             steps {
                 sshagent (['ansible-key']) {
                       
-                      sh 'ssh -t -t ec2-user@13.38.18.123 -o strictHostKeyChecking=no "cd /etc/ansible && ansible-playbook /opt/docker/docker-image.yml"'
+                      sh 'ssh -t -t ec2-user@15.237.62.174 -o strictHostKeyChecking=no "cd /etc/ansible && ansible-playbook /opt/docker/docker-image.yml"'
                   }
               }
         }                
@@ -64,14 +64,14 @@ pipeline {
         stage('Trigger Ansible to deploy app') {
             steps {
                 sshagent (['ansible-key']) {
-                      sh 'ssh -t -t ec2-user@13.38.18.123 -o strictHostKeyChecking=no "cd /etc/ansible && ansible-playbook /opt/docker/docker-container.yml"'
-                      sh 'ssh -t -t ec2-user@13.38.18.123 -o strictHostKeyChecking=no "cd /etc/ansible && ansible-playbook /opt/docker/newrelic-container.yml"'
+                      sh 'ssh -t -t ec2-user@15.237.62.174 -o strictHostKeyChecking=no "cd /etc/ansible && ansible-playbook /opt/docker/docker-container.yml"'
+                      sh 'ssh -t -t ec2-user@15.237.62.174 -o strictHostKeyChecking=no "cd /etc/ansible && ansible-playbook /opt/docker/newrelic-container.yml"'
                   }
               }
         }
         stage('slack notification') {
             steps {
-                slackSend channel: '14th-oct-2024-pet-adoption-project', message: 'Application deploy successfully ', teamDomain: 'Cloudhight', tokenCredentialId: 'slack-cred'
+                slackSend channel: '9th-dec-jenkins-pipeline-containerization-project', message: 'Application deploy successfully ', teamDomain: 'Cloudhight', tokenCredentialId: 'slack-cred'
             }
         }
     }
