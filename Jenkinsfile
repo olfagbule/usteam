@@ -31,7 +31,7 @@ pipeline {
         stage('Install Checkov') {
             steps {
                 sh '''
-                sudo yum install -y python3 python3-pip
+                yum install -y python3 python3-pip
                 # Upgrade pip and install Checkov
                 python3 -m pip install --upgrade pip
                 python3 -m pip install checkov --quiet
