@@ -28,20 +28,31 @@ pipeline {
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
+        // stage('Install Checkov') {
+        //     steps {
+        //         sh '''
+        //         yum install -y python3 python3-pip
+        //         # Upgrade pip and install Checkov
+        //         python3 -m pip install --upgrade pip
+        //         python3 -m pip install checkov --quiet
+        //         # Add Checkov to PATH
+        //         export PATH=$PATH:$(python3 -m site --user-base)/bin
+        //         # Verify Checkov installation
+        //         checkov --version || echo "Checkov installation failed"
+        //         '''
+        //     }
+        // }
+
         stage('Install Checkov') {
-            steps {
-                sh '''
-                yum install -y python3 python3-pip
-                # Upgrade pip and install Checkov
-                python3 -m pip install --upgrade pip
-                python3 -m pip install checkov --quiet
-                # Add Checkov to PATH
-                export PATH=$PATH:$(python3 -m site --user-base)/bin
-                # Verify Checkov installation
-                checkov --version || echo "Checkov installation failed"
-                '''
-            }
-        }
+    steps {
+        sh '''
+            python3 -m pip install --upgrade pip --user
+            python3 -m pip install checkov --quiet --user
+            export PATH=$PATH:$(python3 -m site --user-base)/bin
+            checkov --version || echo "Checkov installation failed"
+        '''
+    }
+}
        stage('Infrastructure Security Scan') {
             steps {
                 sh '''
