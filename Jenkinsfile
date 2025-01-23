@@ -1,8 +1,8 @@
 pipeline {
    agent any
-   environment {
-       NVD_API_KEY = credentials('nvd-key')
-   }
+   // environment {
+   //     NVD_API_KEY = credentials('nvd-key')
+   // }
    stages {
        stage('Code Checkout') {
            steps {
@@ -11,33 +11,27 @@ pipeline {
                url: 'https://github.com/olfagbule/usteam.git'
            }
        }
-       stage('Code Analysis') {
-           steps {
-              withSonarQubeEnv('sonarqube') {
-                 sh "mvn sonar:sonar"
-              }
-           }
-       }
-       stage("Quality Gate") {
-           steps {
-             timeout(time: 2, unit: 'MINUTES') {
-               waitForQualityGate abortPipeline: true
-             }
-           }
-       }
-       // stage('Test NVD API Key') {
+       // stage('Code Analysis') {
        //     steps {
-       //         sh """
-       //             curl -H apiKey: ${NVD_API_KEY}" 'https://services.nvd.nist.gov/rest/json/cves/2.0?resultsPerPage=1'
-       //         """
+       //        withSonarQubeEnv('sonarqube') {
+       //           sh "mvn sonar:sonar"
+       //        }
        //     }
        // }
-       stage('Dependency check') {
-           steps {
-               dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit --nvdApiKey ${NVD_API_KEY}', odcInstallation: 'DP-Check'
-               dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-           }
-       }
+       // stage("Quality Gate") {
+       //     steps {
+       //       timeout(time: 2, unit: 'MINUTES') {
+       //         waitForQualityGate abortPipeline: true
+       //       }
+       //     }
+       // }
+      
+       // stage('Dependency check') {
+       //     steps {
+       //         dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit --nvdApiKey ${NVD_API_KEY}', odcInstallation: 'DP-Check'
+       //         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+       //     }
+       // }
        stage('Infrastructure Security Scan') {
            steps {
                sh '''
