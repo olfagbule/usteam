@@ -5,7 +5,7 @@ pipeline {
             steps {
                 git branch: 'main',
                 credentialsId: 'git-cred',
-                url: 'https://github.com/SirNicks-cloudhight/usteam.git'
+                url: 'https://https://github.com/olfagbule/usteam.git'
             }
         }
         stage('Code Analysis') {
@@ -43,18 +43,25 @@ pipeline {
         //     }
         // }
 
-        stage('Install Checkov') {
-    steps {
-        sh '''
+//         stage('Install Checkov') {
+//     steps {
+//         sh '''
+//             python3 -m pip install --upgrade pip --user
+//             python3 -m pip install checkov --quiet --user
+//             export PATH=$PATH:$(python3 -m site --user-base)/bin
+//             checkov --version || echo "Checkov installation failed"
+//         '''
+//     }
+// }
+       stage('Infrastructure Security Scan') {
+            steps {
+                sh '''
             python3 -m pip install --upgrade pip --user
             python3 -m pip install checkov --quiet --user
             export PATH=$PATH:$(python3 -m site --user-base)/bin
             checkov --version || echo "Checkov installation failed"
         '''
-    }
-}
-       stage('Infrastructure Security Scan') {
-            steps {
+                
                 sh '''
                     # Ensure correct PATH for Checkov command
                     export PATH=$PATH:$(python3 -m site --user-base)/bin
@@ -86,8 +93,8 @@ pipeline {
         stage('Build docker image') {
             steps {
                 sshagent (['ansible-key']) {
-                        sh 'ssh -t -t ec2-user@35.180.40.27 -o strictHostKeyChecking=no "ansible-galaxy collection install community.docker"'
-                      sh 'ssh -t -t ec2-user@35.180.40.27 -o strictHostKeyChecking=no "cd /etc/ansible && ansible-playbook /opt/docker/docker-image.yml"'
+                        sh 'ssh -t -t ec2-user@15.237.27.148 -o strictHostKeyChecking=no "ansible-galaxy collection install community.docker"'
+                      sh 'ssh -t -t ec2-user@15.237.27.148 -o strictHostKeyChecking=no "cd /etc/ansible && ansible-playbook /opt/docker/docker-image.yml"'
                   }
               }
         }                
@@ -99,8 +106,8 @@ pipeline {
         stage('Trigger Ansible to deploy app') {
             steps {
                 sshagent (['ansible-key']) {
-                      sh 'ssh -t -t ec2-user@35.180.40.27 -o strictHostKeyChecking=no "cd /etc/ansible && ansible-playbook /opt/docker/docker-container.yml"'
-                      sh 'ssh -t -t ec2-user@35.180.40.27 -o strictHostKeyChecking=no "cd /etc/ansible && ansible-playbook /opt/docker/newrelic-container.yml"'
+                      sh 'ssh -t -t ec2-user@15.237.27.148 -o strictHostKeyChecking=no "cd /etc/ansible && ansible-playbook /opt/docker/docker-container.yml"'
+                      sh 'ssh -t -t ec2-user@15.237.27.148 -o strictHostKeyChecking=no "cd /etc/ansible && ansible-playbook /opt/docker/newrelic-container.yml"'
                   }
               }
         }
