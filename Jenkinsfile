@@ -34,7 +34,7 @@ pipeline {
        // }
        stage('Dependency check') {
            steps {
-               dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit --nvdApiKey ${NVD_API_KEY} --nvdApiDelay 6000 --log dependency-check.log', odcInstallation: 'DP-Check'
+               dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit --nvdApiKey ${NVD_API_KEY}', odcInstallation: 'DP-Check'
                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
            }
        }
