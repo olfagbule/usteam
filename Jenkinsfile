@@ -31,9 +31,18 @@ pipeline {
 //         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
 //     }
 // }
+
+        stage('Test NVD API Key') {
+    steps {
+        sh """
+            curl -H 'apiKey: ${env.nvd-key}' 'https://services.nvd.nist.gov/rest/json/cves/2.0?resultsPerPage=1'
+        """
+    }
+}
+        
         stage('Dependency check') {
             steps {
-                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit --nvdApiKey ${env.nvd-key} --nvdApiDelay 6000', odcInstallation: 'DP-Check'
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit --nvdApiKey ${env.nvd-key} --nvdApiDelay 6000 --log dependency-check.log', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
