@@ -25,18 +25,18 @@ pipeline {
               }
             }
         }
+//         stage('Dependency check') {
+//     steps {
+//         dependencyCheck additionalArguments: "--scan ./ --disableYarnAudit --disableNodeAudit --nvd.api.key ${env.nvd-key}", odcInstallation: 'DP-Check'
+//         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+//     }
+// }
         stage('Dependency check') {
-    steps {
-        dependencyCheck additionalArguments: "--scan ./ --disableYarnAudit --disableNodeAudit --nvd.api.key ${env.nvd-key}", odcInstallation: 'DP-Check'
-        dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-    }
-}
-        // stage('Dependency check') {
-        //     steps {
-        //         dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
-        //         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-        //     }
-        // }
+            steps {
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit --nvd.api.key ${env.nvd-key}', odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
         // stage('Install Checkov') {
         //     steps {
         //         sh '''
