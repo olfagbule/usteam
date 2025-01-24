@@ -1,8 +1,8 @@
 pipeline {
    agent any
-   // environment {
-   //     NVD_API_KEY = credentials('nvd-key')
-   // }
+   environment {
+       NVD_API_KEY = credentials('nvd-key')
+   }
    stages {
        stage('Code Checkout') {
            steps {
@@ -11,28 +11,28 @@ pipeline {
                url: 'https://github.com/olfagbule/usteam.git'
            }
        }
-       // stage('Code Analysis') {
-       //     steps {
-       //        withSonarQubeEnv('sonarqube') {
-       //           sh "mvn sonar:sonar"
-       //        }
-       //     }
-       // }
-       // stage("Quality Gate") {
-       //     steps {
-       //       timeout(time: 2, unit: 'MINUTES') {
-       //         waitForQualityGate abortPipeline: true
-       //       }
-       //     }
-       // }
+       stage('Code Analysis') {
+           steps {
+              withSonarQubeEnv('sonarqube') {
+                 sh "mvn sonar:sonar"
+              }
+           }
+       }
+       stage("Quality Gate") {
+           steps {
+             timeout(time: 2, unit: 'MINUTES') {
+               waitForQualityGate abortPipeline: true
+             }
+           }
+       }
       
-       // stage('Dependency check') {
-       //     steps {
-       //         dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit --nvdApiKey ${NVD_API_KEY}', odcInstallation: 'DP-Check'
-       //         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-       //     }
-       // }
-       stage('Infrastructure Security Scan') {
+       stage('Dependency check') {
+           steps {
+               dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit --nvdApiKey ${NVD_API_KEY}', odcInstallation: 'DP-Check'
+               dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+           }
+       }
+       stage('Checkov Security Scan') {
            steps {
                sh '''
                    python3 -m pip install --upgrade pip --user
